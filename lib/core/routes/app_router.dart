@@ -22,6 +22,10 @@ class AppRouter {
           path: RoutePaths.splash,
           builder: (context, state) => const SplashScreen(),
         ),
+        GoRoute(
+          path: RoutePaths.home,
+          builder: (context, state) => const HomeScreen(),
+        ),
       ],
     );
   }
