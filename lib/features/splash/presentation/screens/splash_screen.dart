@@ -140,7 +140,7 @@ class _SplashScreenState extends State<SplashScreen>
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[6],
-                size: 110,
+                size: 115,
                 label: 'Mindfulness',
                 color: const Color(0xFF073C71),
               ),
