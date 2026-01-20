@@ -31,12 +31,10 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(seconds: 4),
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.05).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.95,
+      end: 1.05,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _driftAnimations = List.generate(8, (_) {
       final dx = (_random.nextDouble() * 2 - 1) * 10;
@@ -269,10 +267,7 @@ class HomeScreen extends StatelessWidget {
     return const Scaffold(
       backgroundColor: Color(0xFF121212),
       body: Center(
-        child: Text(
-          'Home',
-          style: TextStyle(color: Colors.white),
-        ),
+        child: Text('Home', style: TextStyle(color: Colors.white)),
       ),
     );
   }
