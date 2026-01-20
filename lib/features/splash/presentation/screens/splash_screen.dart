@@ -17,6 +17,56 @@ class _SplashScreenState extends State<SplashScreen>
   final bool _isUserLoggedIn = true; // Cambiar manualmente a false
   final String _mockUserName = 'Josue';
   final Random _random = Random(42);
+  final List<_BubbleSpec> _bubbles = const [
+    _BubbleSpec(
+      label: 'Relaciones',
+      size: 160,
+      color: Color(0xFF073C71),
+      position: Offset(0.08, 0.08),
+    ),
+    _BubbleSpec(
+      label: 'Traumas',
+      size: 140,
+      color: Color(0xFF073C71),
+      position: Offset(0.62, 0.10),
+    ),
+    _BubbleSpec(
+      label: 'Familia',
+      size: 120,
+      color: Color(0xFF073C71),
+      position: Offset(0.15, 0.28),
+    ),
+    _BubbleSpec(
+      label: 'Crecimiento',
+      size: 110,
+      color: Color(0xFF073C71),
+      position: Offset(0.62, 0.30),
+    ),
+    _BubbleSpec(
+      label: 'Ansiedad',
+      size: 110,
+      color: Color(0xFF073C71),
+      position: Offset(0.62, 0.44),
+    ),
+    _BubbleSpec(
+      label: 'Autoestima',
+      size: 140,
+      color: Color(0xFF073C71),
+      position: Offset(0.15, 0.56),
+    ),
+    _BubbleSpec(
+      label: 'Mindfulness',
+      size: 110,
+      color: Color(0xFF073C71),
+      position: Offset(0.48, 0.75),
+    ),
+    _BubbleSpec(
+      label: 'Estrés',
+      size: 150,
+      color: Color(0xFF073C71),
+      position: Offset(0.62, 0.80),
+    ),
+  ];
 
   late final AnimationController _controller;
   late final Animation<double> _scaleAnimation;
@@ -36,9 +86,10 @@ class _SplashScreenState extends State<SplashScreen>
       end: 1.05,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    _driftAnimations = List.generate(8, (_) {
-      final dx = (_random.nextDouble() * 2 - 1) * 10;
-      final dy = (_random.nextDouble() * 2 - 1) * 10;
+    _driftAnimations = List.generate(_bubbles.length, (index) {
+      final driftFactor = _bubbles[index].size * 0.015;
+      final dx = (_random.nextDouble() * 2 - 1) * driftFactor;
+      final dy = (_random.nextDouble() * 2 - 1) * driftFactor;
       return Tween<Offset>(
         begin: Offset.zero,
         end: Offset(dx, dy),
@@ -68,128 +119,94 @@ class _SplashScreenState extends State<SplashScreen>
         child: Stack(
           children: [
             // Burbujas de fondo
-            Positioned(
-              top: 20,
-              left: 10,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[0],
-                size: 180,
-                label: 'Relaciones',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              top: 240,
-              left: 30,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[1],
-                size: 130,
-                label: 'Familia',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              top: 60,
-              right: 20,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[2],
-                size: 150,
-                label: 'Traumas',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              top: 280,
-              right: 40,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[3],
-                size: 120,
-                label: 'Ansiedad',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              bottom: 220,
-              left: 40,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[4],
-                size: 160,
-                label: 'Autoestima',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              bottom: 40,
-              right: 30,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[5],
-                size: 190,
-                label: 'Estrés',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              bottom: 80,
-              left: 200,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[6],
-                size: 110,
-                label: 'Mindfulness',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              top: 140,
-              left: 190,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[7],
-                size: 140,
-                label: 'Crecimiento',
-                color: const Color(0xFF073C71),
-              ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final width = constraints.maxWidth;
+                final height = constraints.maxHeight;
+
+                return Stack(
+                  children: [
+                    for (int index = 0; index < _bubbles.length; index++)
+                      Positioned(
+                        left: (width - _bubbles[index].size) *
+                            _bubbles[index].position.dx,
+                        top: (height - _bubbles[index].size) *
+                            _bubbles[index].position.dy,
+                        child: _AnimatedBubble(
+                          animation: _scaleAnimation,
+                          drift: _driftAnimations[index],
+                          size: _bubbles[index].size,
+                          label: _bubbles[index].label,
+                          color: _bubbles[index].color,
+                        ),
+                      ),
+                  ],
+                );
+              },
             ),
 
             // Contenido central
-            Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    _isUserLoggedIn ? 'Hola, $_mockUserName' : 'Bienvenido',
-                    style: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      letterSpacing: 0.2,
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: SizedBox(
+                      width: constraints.maxWidth * 0.7,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _isUserLoggedIn
+                                ? 'Hola, $_mockUserName'
+                                : 'Bienvenido',
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                              letterSpacing: 0.2,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'The Bridge',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.white70,
+                              letterSpacing: 1.0,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      ),
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'The Bridge',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300,
-                      color: Colors.white70,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ],
         ),
       ),
     );
   }
+}
+
+class _BubbleSpec {
+  const _BubbleSpec({
+    required this.label,
+    required this.size,
+    required this.color,
+    required this.position,
+  });
+
+  final String label;
+  final double size;
+  final Color color;
+  final Offset position;
 }
 
 class _AnimatedBubble extends StatelessWidget {
@@ -209,7 +226,7 @@ class _AnimatedBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double fontSize = (size * 0.12).clamp(12, 20);
+    final double fontSize = (size * 0.16).clamp(12, 26);
 
     return AnimatedBuilder(
       animation: drift,
@@ -245,9 +262,10 @@ class _AnimatedBubble extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: fontSize,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                     color: Colors.white70,
                     letterSpacing: 0.2,
+                    height: 1.1,
                   ),
                 ),
               ),
