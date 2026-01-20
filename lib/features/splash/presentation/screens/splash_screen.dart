@@ -27,12 +27,10 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(seconds: 4),
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.05).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.95,
+      end: 1.05,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _controller.repeat(reverse: true);
 
@@ -219,10 +217,7 @@ class _AnimatedBubble extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: RadialGradient(
-            colors: [
-              colors[0].withOpacity(0.45),
-              colors[1].withOpacity(0.05),
-            ],
+            colors: [colors[0].withOpacity(0.45), colors[1].withOpacity(0.05)],
           ),
         ),
         child: Center(
@@ -256,10 +251,7 @@ class HomeScreen extends StatelessWidget {
     return const Scaffold(
       backgroundColor: Color(0xFF121212),
       body: Center(
-        child: Text(
-          'Home',
-          style: TextStyle(color: Colors.white),
-        ),
+        child: Text('Home', style: TextStyle(color: Colors.white)),
       ),
     );
   }
