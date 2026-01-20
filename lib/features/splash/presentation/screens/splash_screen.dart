@@ -37,8 +37,8 @@ class _SplashScreenState extends State<SplashScreen>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _driftAnimations = List.generate(8, (_) {
-      final dx = (_random.nextDouble() * 2 - 1) * 10;
-      final dy = (_random.nextDouble() * 2 - 1) * 10;
+      final dx = (_random.nextDouble() * 2 - 1) * 4;
+      final dy = (_random.nextDouble() * 2 - 1) * 4;
       return Tween<Offset>(
         begin: Offset.zero,
         end: Offset(dx, dy),
@@ -69,74 +69,74 @@ class _SplashScreenState extends State<SplashScreen>
           children: [
             // Burbujas de fondo
             Positioned(
-              top: 20,
-              left: 10,
+              top: 40,
+              left: 24,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[0],
-                size: 180,
+                size: 160,
                 label: 'Relaciones',
                 color: const Color(0xFF073C71),
               ),
             ),
             Positioned(
               top: 240,
-              left: 30,
+              left: 50,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[1],
-                size: 130,
+                size: 120,
                 label: 'Familia',
                 color: const Color(0xFF073C71),
               ),
             ),
             Positioned(
               top: 60,
-              right: 20,
+              right: 24,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[2],
-                size: 150,
+                size: 140,
                 label: 'Traumas',
                 color: const Color(0xFF073C71),
               ),
             ),
             Positioned(
-              top: 280,
-              right: 40,
+              top: 200,
+              right: 36,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[3],
-                size: 120,
+                size: 110,
+                label: 'Crecimiento',
+                color: const Color(0xFF073C71),
+              ),
+            ),
+            Positioned(
+              top: 320,
+              right: 48,
+              child: _AnimatedBubble(
+                animation: _scaleAnimation,
+                drift: _driftAnimations[4],
+                size: 110,
                 label: 'Ansiedad',
                 color: const Color(0xFF073C71),
               ),
             ),
             Positioned(
-              bottom: 220,
+              bottom: 260,
               left: 40,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
-                drift: _driftAnimations[4],
-                size: 160,
+                drift: _driftAnimations[5],
+                size: 140,
                 label: 'Autoestima',
                 color: const Color(0xFF073C71),
               ),
             ),
             Positioned(
-              bottom: 40,
-              right: 30,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[5],
-                size: 190,
-                label: 'Estrés',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              bottom: 80,
-              left: 200,
+              bottom: 120,
+              left: 190,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[6],
@@ -146,44 +146,59 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Positioned(
-              top: 140,
-              left: 190,
+              bottom: 60,
+              right: 30,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[7],
-                size: 140,
-                label: 'Crecimiento',
+                size: 150,
+                label: 'Estrés',
                 color: const Color(0xFF073C71),
               ),
             ),
 
             // Contenido central
-            Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    _isUserLoggedIn ? 'Hola, $_mockUserName' : 'Bienvenido',
-                    style: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      letterSpacing: 0.2,
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: SizedBox(
+                      width: constraints.maxWidth * 0.7,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _isUserLoggedIn
+                                ? 'Hola, $_mockUserName'
+                                : 'Bienvenido',
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                              letterSpacing: 0.2,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'The Bridge',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.white70,
+                              letterSpacing: 1.0,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      ),
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'The Bridge',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300,
-                      color: Colors.white70,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ],
         ),
@@ -209,7 +224,7 @@ class _AnimatedBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double fontSize = (size * 0.12).clamp(12, 20);
+    final double fontSize = (size * 0.16).clamp(12, 26);
 
     return AnimatedBuilder(
       animation: drift,
@@ -245,9 +260,10 @@ class _AnimatedBubble extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: fontSize,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                     color: Colors.white70,
                     letterSpacing: 0.2,
+                    height: 1.1,
                   ),
                 ),
               ),
