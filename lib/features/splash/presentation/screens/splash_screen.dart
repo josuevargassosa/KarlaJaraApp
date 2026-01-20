@@ -56,11 +56,12 @@ class _SplashScreenState extends State<SplashScreen>
         children: [
           // Burbujas de fondo
           Positioned(
-            top: -60,
-            left: -40,
+            top: -70,
+            left: -50,
             child: _AnimatedBubble(
               animation: _scaleAnimation,
               size: 220,
+              label: 'Relaciones',
               colors: const [
                 Color(0xFF4F46E5),
                 Color(0xFF7C3AED),
@@ -68,11 +69,12 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
           Positioned(
-            bottom: -80,
-            right: -20,
+            top: 120,
+            left: 20,
             child: _AnimatedBubble(
               animation: _scaleAnimation,
-              size: 260,
+              size: 140,
+              label: 'Familia',
               colors: const [
                 Color(0xFF3B82F6),
                 Color(0xFF9333EA),
@@ -80,13 +82,79 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
           Positioned(
-            top: 140,
-            right: -60,
+            top: 40,
+            right: -40,
+            child: _AnimatedBubble(
+              animation: _scaleAnimation,
+              size: 170,
+              label: 'Traumas',
+              colors: const [
+                Color(0xFF6366F1),
+                Color(0xFF8B5CF6),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 260,
+            right: 40,
+            child: _AnimatedBubble(
+              animation: _scaleAnimation,
+              size: 120,
+              label: 'Ansiedad',
+              colors: const [
+                Color(0xFF2563EB),
+                Color(0xFF7C3AED),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 80,
+            left: -20,
             child: _AnimatedBubble(
               animation: _scaleAnimation,
               size: 180,
+              label: 'Autoestima',
               colors: const [
+                Color(0xFF4C1D95),
                 Color(0xFF6366F1),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: -70,
+            right: -10,
+            child: _AnimatedBubble(
+              animation: _scaleAnimation,
+              size: 240,
+              label: 'Estrés',
+              colors: const [
+                Color(0xFF3B82F6),
+                Color(0xFF9333EA),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 160,
+            right: 140,
+            child: _AnimatedBubble(
+              animation: _scaleAnimation,
+              size: 110,
+              label: 'Mindfulness',
+              colors: const [
+                Color(0xFF312E81),
+                Color(0xFF7C3AED),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 220,
+            left: 200,
+            child: _AnimatedBubble(
+              animation: _scaleAnimation,
+              size: 130,
+              label: 'Crecimiento',
+              colors: const [
+                Color(0xFF1D4ED8),
                 Color(0xFF8B5CF6),
               ],
             ),
@@ -130,15 +198,19 @@ class _AnimatedBubble extends StatelessWidget {
   const _AnimatedBubble({
     required this.animation,
     required this.size,
+    required this.label,
     required this.colors,
   });
 
   final Animation<double> animation;
   final double size;
+  final String label;
   final List<Color> colors;
 
   @override
   Widget build(BuildContext context) {
+    final double fontSize = (size * 0.12).clamp(12, 20);
+
     return ScaleTransition(
       scale: animation,
       child: Container(
@@ -151,6 +223,24 @@ class _AnimatedBubble extends StatelessWidget {
               colors[0].withOpacity(0.45),
               colors[1].withOpacity(0.05),
             ],
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white70,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ),
           ),
         ),
       ),
