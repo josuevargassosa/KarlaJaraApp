@@ -17,6 +17,56 @@ class _SplashScreenState extends State<SplashScreen>
   final bool _isUserLoggedIn = true; // Cambiar manualmente a false
   final String _mockUserName = 'Josue';
   final Random _random = Random(42);
+  final List<_BubbleSpec> _bubbles = const [
+    _BubbleSpec(
+      label: 'Relaciones',
+      size: 160,
+      color: Color(0xFF073C71),
+      position: Offset(0.08, 0.08),
+    ),
+    _BubbleSpec(
+      label: 'Traumas',
+      size: 140,
+      color: Color(0xFF073C71),
+      position: Offset(0.62, 0.10),
+    ),
+    _BubbleSpec(
+      label: 'Familia',
+      size: 120,
+      color: Color(0xFF073C71),
+      position: Offset(0.15, 0.28),
+    ),
+    _BubbleSpec(
+      label: 'Crecimiento',
+      size: 110,
+      color: Color(0xFF073C71),
+      position: Offset(0.62, 0.30),
+    ),
+    _BubbleSpec(
+      label: 'Ansiedad',
+      size: 110,
+      color: Color(0xFF073C71),
+      position: Offset(0.62, 0.44),
+    ),
+    _BubbleSpec(
+      label: 'Autoestima',
+      size: 140,
+      color: Color(0xFF073C71),
+      position: Offset(0.15, 0.56),
+    ),
+    _BubbleSpec(
+      label: 'Mindfulness',
+      size: 110,
+      color: Color(0xFF073C71),
+      position: Offset(0.48, 0.75),
+    ),
+    _BubbleSpec(
+      label: 'Estrés',
+      size: 150,
+      color: Color(0xFF073C71),
+      position: Offset(0.62, 0.80),
+    ),
+  ];
 
   late final AnimationController _controller;
   late final Animation<double> _scaleAnimation;
@@ -36,9 +86,10 @@ class _SplashScreenState extends State<SplashScreen>
       end: 1.05,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    _driftAnimations = List.generate(8, (_) {
-      final dx = (_random.nextDouble() * 2 - 1) * 4;
-      final dy = (_random.nextDouble() * 2 - 1) * 4;
+    _driftAnimations = List.generate(_bubbles.length, (index) {
+      final driftFactor = _bubbles[index].size * 0.015;
+      final dx = (_random.nextDouble() * 2 - 1) * driftFactor;
+      final dy = (_random.nextDouble() * 2 - 1) * driftFactor;
       return Tween<Offset>(
         begin: Offset.zero,
         end: Offset(dx, dy),
@@ -68,93 +119,30 @@ class _SplashScreenState extends State<SplashScreen>
         child: Stack(
           children: [
             // Burbujas de fondo
-            Positioned(
-              top: 40,
-              left: 24,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[0],
-                size: 160,
-                label: 'Relaciones',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              top: 240,
-              left: 50,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[1],
-                size: 120,
-                label: 'Familia',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              top: 60,
-              right: 24,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[2],
-                size: 140,
-                label: 'Traumas',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              top: 200,
-              right: 36,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[3],
-                size: 110,
-                label: 'Crecimiento',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              top: 320,
-              right: 48,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[4],
-                size: 110,
-                label: 'Ansiedad',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              bottom: 260,
-              left: 40,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[5],
-                size: 140,
-                label: 'Autoestima',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              bottom: 120,
-              left: 190,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[6],
-                size: 115,
-                label: 'Mindfulness',
-                color: const Color(0xFF073C71),
-              ),
-            ),
-            Positioned(
-              bottom: 60,
-              right: 30,
-              child: _AnimatedBubble(
-                animation: _scaleAnimation,
-                drift: _driftAnimations[7],
-                size: 150,
-                label: 'Estrés',
-                color: const Color(0xFF073C71),
-              ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final width = constraints.maxWidth;
+                final height = constraints.maxHeight;
+
+                return Stack(
+                  children: [
+                    for (int index = 0; index < _bubbles.length; index++)
+                      Positioned(
+                        left: (width - _bubbles[index].size) *
+                            _bubbles[index].position.dx,
+                        top: (height - _bubbles[index].size) *
+                            _bubbles[index].position.dy,
+                        child: _AnimatedBubble(
+                          animation: _scaleAnimation,
+                          drift: _driftAnimations[index],
+                          size: _bubbles[index].size,
+                          label: _bubbles[index].label,
+                          color: _bubbles[index].color,
+                        ),
+                      ),
+                  ],
+                );
+              },
             ),
 
             // Contenido central
@@ -205,6 +193,20 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
+}
+
+class _BubbleSpec {
+  const _BubbleSpec({
+    required this.label,
+    required this.size,
+    required this.color,
+    required this.position,
+  });
+
+  final String label;
+  final double size;
+  final Color color;
+  final Offset position;
 }
 
 class _AnimatedBubble extends StatelessWidget {
