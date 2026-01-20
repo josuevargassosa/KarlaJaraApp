@@ -37,8 +37,8 @@ class _SplashScreenState extends State<SplashScreen>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _driftAnimations = List.generate(8, (_) {
-      final dx = (_random.nextDouble() * 2 - 1) * 10;
-      final dy = (_random.nextDouble() * 2 - 1) * 10;
+      final dx = (_random.nextDouble() * 2 - 1) * 6;
+      final dy = (_random.nextDouble() * 2 - 1) * 6;
       return Tween<Offset>(
         begin: Offset.zero,
         end: Offset(dx, dy),
@@ -69,120 +69,126 @@ class _SplashScreenState extends State<SplashScreen>
           children: [
             // Burbujas de fondo
             Positioned(
-              top: 20,
-              left: 10,
+              top: 30,
+              left: 20,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[0],
-                size: 180,
+                size: 170,
                 label: 'Relaciones',
                 color: const Color(0xFF073C71),
               ),
             ),
             Positioned(
-              top: 240,
-              left: 30,
+              top: 220,
+              left: 40,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[1],
-                size: 130,
+                size: 125,
                 label: 'Familia',
                 color: const Color(0xFF073C71),
               ),
             ),
             Positioned(
-              top: 60,
-              right: 20,
+              top: 50,
+              right: 30,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[2],
-                size: 150,
+                size: 145,
                 label: 'Traumas',
                 color: const Color(0xFF073C71),
               ),
             ),
             Positioned(
-              top: 280,
-              right: 40,
+              top: 260,
+              right: 55,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[3],
-                size: 120,
+                size: 118,
                 label: 'Ansiedad',
                 color: const Color(0xFF073C71),
               ),
             ),
             Positioned(
-              bottom: 220,
-              left: 40,
+              bottom: 240,
+              left: 30,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[4],
-                size: 160,
+                size: 150,
                 label: 'Autoestima',
                 color: const Color(0xFF073C71),
               ),
             ),
             Positioned(
-              bottom: 40,
-              right: 30,
+              bottom: 30,
+              right: 40,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[5],
-                size: 190,
+                size: 175,
                 label: 'Estrés',
                 color: const Color(0xFF073C71),
               ),
             ),
             Positioned(
-              bottom: 80,
-              left: 200,
+              bottom: 100,
+              left: 190,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[6],
-                size: 110,
+                size: 115,
                 label: 'Mindfulness',
                 color: const Color(0xFF073C71),
               ),
             ),
             Positioned(
               top: 140,
-              left: 190,
+              left: 200,
               child: _AnimatedBubble(
                 animation: _scaleAnimation,
                 drift: _driftAnimations[7],
-                size: 140,
+                size: 135,
                 label: 'Crecimiento',
                 color: const Color(0xFF073C71),
               ),
             ),
 
             // Contenido central
-            Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    _isUserLoggedIn ? 'Hola, $_mockUserName' : 'Bienvenido',
-                    style: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      letterSpacing: 0.2,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _isUserLoggedIn ? 'Hola, $_mockUserName' : 'Bienvenido',
+                      style: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        letterSpacing: 0.2,
+                      ),
+                      textAlign: TextAlign.left,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'The Bridge',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300,
-                      color: Colors.white70,
-                      letterSpacing: 1.0,
+                    const SizedBox(height: 8),
+                    const Text(
+                      'The Bridge',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white70,
+                        letterSpacing: 1.0,
+                      ),
+                      textAlign: TextAlign.left,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -209,7 +215,7 @@ class _AnimatedBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double fontSize = (size * 0.12).clamp(12, 20);
+    final double fontSize = (size * 0.16).clamp(12, 26);
 
     return AnimatedBuilder(
       animation: drift,
@@ -245,9 +251,10 @@ class _AnimatedBubble extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: fontSize,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                     color: Colors.white70,
                     letterSpacing: 0.2,
+                    height: 1.1,
                   ),
                 ),
               ),
