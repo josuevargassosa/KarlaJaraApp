@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/routes/route_paths.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -24,21 +26,20 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(seconds: 4),
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.05).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.95,
+      end: 1.05,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _controller.repeat(reverse: true);
 
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
+      // Navegar a la pantalla principal
+      // GoRouter se encargará de redirigir al login si no está autenticado
+      // basado en la lógica de redirección que deberíamos implementar en AppRouter
+      // Por ahora navegamos al landing o home
+      context.go(RoutePaths.landing);
     });
   }
 
@@ -61,10 +62,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: _AnimatedBubble(
               animation: _scaleAnimation,
               size: 220,
-              colors: const [
-                Color(0xFF4F46E5),
-                Color(0xFF7C3AED),
-              ],
+              colors: const [Color(0xFF4F46E5), Color(0xFF7C3AED)],
             ),
           ),
           Positioned(
@@ -73,10 +71,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: _AnimatedBubble(
               animation: _scaleAnimation,
               size: 260,
-              colors: const [
-                Color(0xFF3B82F6),
-                Color(0xFF9333EA),
-              ],
+              colors: const [Color(0xFF3B82F6), Color(0xFF9333EA)],
             ),
           ),
           Positioned(
@@ -85,10 +80,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: _AnimatedBubble(
               animation: _scaleAnimation,
               size: 180,
-              colors: const [
-                Color(0xFF6366F1),
-                Color(0xFF8B5CF6),
-              ],
+              colors: const [Color(0xFF6366F1), Color(0xFF8B5CF6)],
             ),
           ),
 
@@ -147,10 +139,7 @@ class _AnimatedBubble extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: RadialGradient(
-            colors: [
-              colors[0].withOpacity(0.45),
-              colors[1].withOpacity(0.05),
-            ],
+            colors: [colors[0].withOpacity(0.45), colors[1].withOpacity(0.05)],
           ),
         ),
       ),
@@ -166,10 +155,7 @@ class HomeScreen extends StatelessWidget {
     return const Scaffold(
       backgroundColor: Color(0xFF121212),
       body: Center(
-        child: Text(
-          'Home',
-          style: TextStyle(color: Colors.white),
-        ),
+        child: Text('Home', style: TextStyle(color: Colors.white)),
       ),
     );
   }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "994450752972",
+    "project_id": "karlajaraapp",
+    "storage_bucket": "karlajaraapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:994450752972:android:c57e103d6ec8c310d8c969",
+        "android_client_info": {
+          "package_name": "com.example.karla_jara_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu-GuUcEeCXm2ua8jfZBcTnmHB5nOlpd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

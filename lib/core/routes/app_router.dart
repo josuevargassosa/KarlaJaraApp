@@ -8,7 +8,7 @@ import 'route_paths.dart';
 class AppRouter {
   static GoRouter buildRouter() {
     return GoRouter(
-      initialLocation: RoutePaths.landing,
+      initialLocation: RoutePaths.splash,
       routes: [
         GoRoute(
           path: RoutePaths.landing,
