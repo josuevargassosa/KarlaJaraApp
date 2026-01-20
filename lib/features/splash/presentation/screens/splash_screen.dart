@@ -22,49 +22,41 @@ class _SplashScreenState extends State<SplashScreen>
       label: 'Relaciones',
       size: 160,
       color: Color(0xFF073C71),
-      position: Offset(0.08, 0.08),
     ),
     _BubbleSpec(
       label: 'Traumas',
       size: 140,
       color: Color(0xFF073C71),
-      position: Offset(0.62, 0.10),
     ),
     _BubbleSpec(
       label: 'Familia',
       size: 120,
       color: Color(0xFF073C71),
-      position: Offset(0.15, 0.28),
     ),
     _BubbleSpec(
       label: 'Crecimiento',
       size: 110,
       color: Color(0xFF073C71),
-      position: Offset(0.62, 0.30),
     ),
     _BubbleSpec(
       label: 'Ansiedad',
       size: 110,
       color: Color(0xFF073C71),
-      position: Offset(0.62, 0.44),
     ),
     _BubbleSpec(
       label: 'Autoestima',
       size: 140,
       color: Color(0xFF073C71),
-      position: Offset(0.15, 0.56),
     ),
     _BubbleSpec(
       label: 'Mindfulness',
       size: 110,
       color: Color(0xFF073C71),
-      position: Offset(0.48, 0.75),
     ),
     _BubbleSpec(
       label: 'Estrés',
       size: 150,
       color: Color(0xFF073C71),
-      position: Offset(0.62, 0.80),
     ),
   ];
 
@@ -123,21 +115,23 @@ class _SplashScreenState extends State<SplashScreen>
               builder: (context, constraints) {
                 final width = constraints.maxWidth;
                 final height = constraints.maxHeight;
+                final margin = _calculateBubbleMargin(width, height);
+                final placements =
+                    _calculateBubblePlacements(width, height, margin);
 
                 return Stack(
                   children: [
                     for (int index = 0; index < _bubbles.length; index++)
                       Positioned(
-                        left: (width - _bubbles[index].size) *
-                            _bubbles[index].position.dx,
-                        top: (height - _bubbles[index].size) *
-                            _bubbles[index].position.dy,
+                        left: placements[index].topLeft.dx,
+                        top: placements[index].topLeft.dy,
                         child: _AnimatedBubble(
                           animation: _scaleAnimation,
                           drift: _driftAnimations[index],
                           size: _bubbles[index].size,
                           label: _bubbles[index].label,
                           color: _bubbles[index].color,
+                          maxDrift: placements[index].maxDrift,
                         ),
                       ),
                   ],
@@ -193,6 +187,144 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
+
+  double _calculateBubbleMargin(double width, double height) {
+    final minDimension = min(width, height);
+    return (minDimension * 0.03).clamp(8.0, 24.0);
+  }
+
+  List<_BubblePlacement> _calculateBubblePlacements(
+    double width,
+    double height,
+    double margin,
+  ) {
+    final candidates = _buildCandidateCenters(width, height);
+    final placements =
+        List<_BubblePlacement?>.filled(_bubbles.length, null);
+    final placedCenters = <int, Offset>{};
+
+    final orderedIndexes = List<int>.generate(_bubbles.length, (index) => index)
+      ..sort((a, b) => _bubbles[b].size.compareTo(_bubbles[a].size));
+
+    final adjustments = <Offset>[
+      Offset.zero,
+      Offset(margin, 0),
+      Offset(-margin, 0),
+      Offset(0, margin),
+      Offset(0, -margin),
+      Offset(margin, margin),
+      Offset(-margin, margin),
+      Offset(margin, -margin),
+      Offset(-margin, -margin),
+      Offset(margin * 2, 0),
+      Offset(-margin * 2, 0),
+      Offset(0, margin * 2),
+      Offset(0, -margin * 2),
+    ];
+
+    for (final index in orderedIndexes) {
+      final radius = _bubbles[index].size / 2;
+      Offset? selectedCenter;
+
+      for (final candidate in candidates) {
+        for (final adjustment in adjustments) {
+          final adjustedCenter = Offset(
+            (candidate.dx + adjustment.dx)
+                .clamp(radius + margin, width - radius - margin),
+            (candidate.dy + adjustment.dy)
+                .clamp(radius + margin, height - radius - margin),
+          );
+
+          if (_isCenterAvailable(
+            adjustedCenter,
+            radius,
+            margin,
+            placedCenters,
+          )) {
+            selectedCenter = adjustedCenter;
+            break;
+          }
+        }
+        if (selectedCenter != null) {
+          break;
+        }
+      }
+
+      selectedCenter ??= Offset(
+        width / 2,
+        height / 2,
+      );
+
+      placements[index] = _BubblePlacement(
+        topLeft: Offset(selectedCenter.dx - radius, selectedCenter.dy - radius),
+        maxDrift: min(margin * 0.6, radius * 0.25),
+      );
+      placedCenters[index] = selectedCenter;
+    }
+
+    return placements
+        .map(
+          (placement) =>
+              placement ??
+              const _BubblePlacement(
+                topLeft: Offset.zero,
+                maxDrift: 0,
+              ),
+        )
+        .toList();
+  }
+
+  bool _isCenterAvailable(
+    Offset center,
+    double radius,
+    double margin,
+    Map<int, Offset> placedCenters,
+  ) {
+    for (final entry in placedCenters.entries) {
+      final otherCenter = entry.value;
+      final otherRadius = _bubbles[entry.key].size / 2;
+      final minDistance = radius + otherRadius + margin;
+      final distanceSquared = (center.dx - otherCenter.dx) *
+              (center.dx - otherCenter.dx) +
+          (center.dy - otherCenter.dy) * (center.dy - otherCenter.dy);
+      if (distanceSquared < minDistance * minDistance) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  List<Offset> _buildCandidateCenters(double width, double height) {
+    const columns = 3;
+    final rows = (_bubbles.length / columns).ceil().clamp(1, 4);
+    final xStep = width / (columns + 1);
+    final yStep = height / (rows + 1);
+    final candidates = <Offset>[];
+
+    for (int row = 0; row < rows; row++) {
+      for (int column = 0; column < columns; column++) {
+        final baseX = xStep * (column + 1);
+        final stagger = row.isOdd ? xStep * 0.25 : 0.0;
+        candidates.add(
+          Offset(
+            (baseX + stagger).clamp(xStep * 0.5, width - xStep * 0.5),
+            yStep * (row + 1),
+          ),
+        );
+      }
+    }
+
+    if (candidates.length < _bubbles.length) {
+      candidates.add(
+        Offset(width * 0.5, height * 0.25),
+      );
+      candidates.add(
+        Offset(width * 0.5, height * 0.75),
+      );
+    }
+
+    return candidates;
+  }
 }
 
 class _BubbleSpec {
@@ -200,13 +332,21 @@ class _BubbleSpec {
     required this.label,
     required this.size,
     required this.color,
-    required this.position,
   });
 
   final String label;
   final double size;
   final Color color;
-  final Offset position;
+}
+
+class _BubblePlacement {
+  const _BubblePlacement({
+    required this.topLeft,
+    required this.maxDrift,
+  });
+
+  final Offset topLeft;
+  final double maxDrift;
 }
 
 class _AnimatedBubble extends StatelessWidget {
@@ -216,6 +356,7 @@ class _AnimatedBubble extends StatelessWidget {
     required this.size,
     required this.label,
     required this.color,
+    required this.maxDrift,
   });
 
   final Animation<double> animation;
@@ -223,6 +364,7 @@ class _AnimatedBubble extends StatelessWidget {
   final double size;
   final String label;
   final Color color;
+  final double maxDrift;
 
   @override
   Widget build(BuildContext context) {
@@ -231,8 +373,12 @@ class _AnimatedBubble extends StatelessWidget {
     return AnimatedBuilder(
       animation: drift,
       builder: (context, child) {
+        final driftOffset = Offset(
+          drift.value.dx.clamp(-maxDrift, maxDrift),
+          drift.value.dy.clamp(-maxDrift, maxDrift),
+        );
         return Transform.translate(
-          offset: drift.value,
+          offset: driftOffset,
           child: child,
         );
       },
