@@ -8,7 +8,7 @@ import 'route_paths.dart';
 class AppRouter {
   static GoRouter buildRouter() {
     return GoRouter(
-      initialLocation: RoutePaths.landing,
+      initialLocation: RoutePaths.splash,
       routes: [
         GoRoute(
           path: RoutePaths.landing,
@@ -21,6 +21,10 @@ class AppRouter {
         GoRoute(
           path: RoutePaths.splash,
           builder: (context, state) => const SplashScreen(),
+        ),
+        GoRoute(
+          path: RoutePaths.home,
+          builder: (context, state) => const HomeScreen(),
         ),
       ],
     );
